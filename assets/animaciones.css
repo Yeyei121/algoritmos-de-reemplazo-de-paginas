@@ -1,0 +1,178 @@
+/* Animaciones de la placa. Todas se disparan al montar el paso (la placa cambia de
+   `key` en cada paso) y sus duraciones se multiplican por --escala (velocidad).
+
+   Línea de tiempo de un paso a 1×:
+     0 – 250 ms     pulso de señal baja por la pista hasta el zócalo referenciado
+     250 – 750 ms   acierto: el chip destella y se enciende un punto de C
+     300 – 700 ms   fallo con reemplazo: la víctima se levanta y viaja al disco
+     700 – 1050 ms  la página nueva viaja del disco al zócalo y encaja
+     1050 – 1350 ms corrimiento del registro H en todos los chips
+     1350 – 1600 ms envejecimiento: onda y C ÷ 2
+*/
+
+.placa { --d: var(--escala); }
+
+/* 1. Pulso de señal por la pista de entrada */
+.zocalo[data-referenciado="true"] .pista-entrada { opacity: 1; }
+.zocalo[data-referenciado="true"] .pista-entrada::after {
+  content: ""; position: absolute; left: -3px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--led); box-shadow: 0 0 8px var(--led);
+  animation: pulso calc(var(--t-pulso) * var(--d)) ease-in both;
+}
+@keyframes pulso {
+  from { top: -4px; opacity: 1; }
+  to { top: calc(100% - 4px); opacity: 0.2; }
+}
+
+/* 2. Acierto: destello del chip */
+.chip[data-evento="acierto"] {
+  animation: destello calc(500ms * var(--d)) ease-out calc(var(--t-pulso) * var(--d)) both;
+}
+@keyframes destello {
+  0% { box-shadow: 0 0 0 0 rgba(91, 200, 232, 0); border-color: #2b302d; }
+  30% { box-shadow: 0 0 0 4px rgba(91, 200, 232, 0.55); border-color: var(--acierto); }
+  100% { box-shadow: 0 0 0 0 rgba(91, 200, 232, 0); border-color: var(--acierto); }
+}
+.chip[data-evento="acierto"] .sello { animation: aparecer calc(200ms * var(--d)) ease-out calc(var(--t-pulso) * var(--d)) both; }
+.punto[data-estado="nuevo"] { animation: encender calc(250ms * var(--d)) steps(2, end) calc(300ms * var(--d)) both; }
+@keyframes encender {
+  from { background: transparent; border-color: var(--led-anillo); }
+  to { background: var(--led); border-color: var(--led); }
+}
+
+/* Candidatas marcadas mientras corre la cascada */
+.chip[data-candidata="true"] {
+  animation: candidata calc(450ms * var(--d)) ease-in-out calc(var(--t-pulso) * var(--d)) both;
+}
+@keyframes candidata {
+  0%, 100% { outline-color: transparent; }
+  30%, 70% { outline-color: var(--cobre); }
+}
+
+/* 3. Fallo: la víctima se levanta y baja por la pista hasta el disco */
+.chip-fantasma {
+  animation: salir-a-disco calc(400ms * var(--d)) cubic-bezier(0.5, 0, 0.8, 0.4) calc(var(--t-salida) * var(--d)) both;
+}
+@keyframes salir-a-disco {
+  0% { transform: none; opacity: 1; }
+  20% { transform: translateY(-10px) scale(1.04); opacity: 1; box-shadow: 0 10px 18px rgba(0, 0, 0, 0.45); }
+  100% { transform: translateY(var(--hasta-disco)) scale(0.6); opacity: 0; }
+}
+/* La página nueva sube desde el disco y encaja */
+.chip[data-evento="entrada"]:not(.chip-fantasma),
+.chip[data-evento="reemplazo"]:not(.chip-fantasma) {
+  animation: entrar-desde-disco calc(350ms * var(--d)) cubic-bezier(0.2, 0.6, 0.3, 1.15) calc(var(--t-entrada) * var(--d)) both;
+}
+@keyframes entrar-desde-disco {
+  0% { transform: translateY(var(--hasta-disco)) scale(0.6); opacity: 0; }
+  70% { opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.chip[data-evento="entrada"] .sello, .chip[data-evento="reemplazo"] .sello {
+  animation: aparecer calc(200ms * var(--d)) ease-out calc(var(--t-entrada) * var(--d)) both;
+}
+@keyframes aparecer { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+
+/* Escritura a disco (M = 1) */
+.disco-escritura { animation: escribir calc(600ms * var(--d)) ease-out calc(500ms * var(--d)) both; }
+@keyframes escribir {
+  0% { opacity: 0; box-shadow: 0 0 0 0 rgba(255, 182, 39, 0.8); }
+  40% { opacity: 1; box-shadow: 0 0 0 6px rgba(255, 182, 39, 0); }
+  100% { opacity: 1; }
+}
+
+/* 4. Registro de historia: todos los LEDs se corren una posición a la derecha.
+   Durante la espera se ve el estado anterior (fill-mode: backwards). */
+.registro-leds .led {
+  animation: correr calc(300ms * var(--d)) ease-in-out calc(var(--t-corrimiento) * var(--d)) both;
+}
+.registro-leds .led:first-child {
+  animation-name: entrar-bit;
+}
+@keyframes correr {
+  from { transform: translateX(calc(-1 * var(--ancho-led))); }
+  to { transform: none; }
+}
+@keyframes entrar-bit {
+  from { transform: translateX(calc(-1 * var(--ancho-led))); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.registro-leds .led.led-caido {
+  animation: caer calc(380ms * var(--d)) ease-in calc(var(--t-corrimiento) * var(--d)) both;
+}
+@keyframes caer {
+  0% { transform: translateX(calc(-1 * var(--ancho-led))); opacity: 1; }
+  40% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; background: transparent; box-shadow: none; }
+}
+
+/* El texto binario cambia justo cuando se corren los LEDs */
+.bits-antes { animation: ocultar 1ms linear calc((var(--t-corrimiento) + 150ms) * var(--d)) both; }
+.bits-despues { animation: mostrar 1ms linear calc((var(--t-corrimiento) + 150ms) * var(--d)) both; }
+@keyframes ocultar { from { opacity: 1; } to { opacity: 0; } }
+@keyframes mostrar { from { opacity: 0; } to { opacity: 1; } }
+
+/* 5. Envejecimiento: una onda recorre la placa y C se divide entre 2 */
+.onda {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0, rgba(255, 182, 39, 0.16) 45%, rgba(255, 182, 39, 0.16) 55%, transparent 100%);
+  background-size: 40% 100%; background-repeat: no-repeat;
+  animation: onda calc(500ms * var(--d)) linear calc(var(--t-envejecer) * var(--d)) both;
+}
+@keyframes onda {
+  from { background-position: -60% 0; opacity: 1; }
+  to { background-position: 160% 0; opacity: 0; }
+}
+.division {
+  position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 600;
+  padding: 1px 4px; background: var(--led); color: var(--sobre-relleno); border-radius: var(--radio);
+  animation: aparecer calc(200ms * var(--d)) ease-out calc(var(--t-envejecer) * var(--d)) both;
+}
+.punto[data-estado="se_apaga"] {
+  animation: apagar calc(200ms * var(--d)) steps(2, end) calc(var(--t-envejecer) * var(--d)) both;
+}
+@keyframes apagar {
+  from { background: var(--led); border-color: var(--led); }
+  to { background: transparent; border-color: var(--led-anillo); }
+}
+
+/* Marcador de 7 segmentos: parpadeo al cambiar */
+.digito[data-cambia="true"] .seg { animation: parpadeo calc(240ms * var(--escala)) steps(3, end) both; }
+@keyframes parpadeo { 0% { opacity: 0.2; } 50% { opacity: 1; } 75% { opacity: 0.4; } 100% { opacity: 1; } }
+
+/* Panel de decisión: la cascada se recorre regla por regla */
+.cascada .regla { animation: revelar calc(220ms * var(--escala)) ease-out both; animation-delay: calc((var(--t-pulso) + var(--orden) * 160ms) * var(--escala)); }
+.cascada .candidata[data-sigue="false"] strong {
+  animation: tachar calc(220ms * var(--escala)) ease-out both;
+  animation-delay: calc((var(--t-pulso) + var(--orden) * 160ms + 120ms) * var(--escala));
+}
+@keyframes revelar { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tachar { from { text-decoration-color: transparent; } to { text-decoration-color: var(--fallo); } }
+.frase[data-animar="true"] { animation: revelar calc(250ms * var(--escala)) ease-out both; animation-delay: calc(var(--t-salida) * var(--escala)); }
+
+/* Tabla: la celda de la columna actual gira como una ficha si cambió */
+.tp-celda[data-col="actual"][data-cambio="true"] { animation: girar calc(320ms * var(--escala)) ease-out calc(var(--t-entrada) * var(--escala)) both; }
+@keyframes girar {
+  from { transform: perspective(200px) rotateX(90deg); }
+  to { transform: none; }
+}
+.tp-conector[data-col="actual"] span { animation: aparecer calc(220ms * var(--escala)) ease-out calc(var(--t-entrada) * var(--escala)) both; }
+
+/* Movimiento reducido: sin viajes ni giros, solo fundidos cortos. */
+@media (prefers-reduced-motion: reduce) {
+  .placa *, .placa *::before, .placa *::after, .cascada *, .tabla-pasos *, .digito .seg {
+    animation-duration: 120ms !important;
+    animation-delay: 0ms !important;
+    transition: none !important;
+  }
+  .chip-fantasma { animation-name: fundido-salida !important; }
+  .chip[data-evento="entrada"]:not(.chip-fantasma),
+  .chip[data-evento="reemplazo"]:not(.chip-fantasma),
+  .tp-celda[data-col="actual"][data-cambio="true"] { animation-name: revelar !important; }
+  .registro-leds .led, .registro-leds .led:first-child { animation-name: revelar !important; }
+  .registro-leds .led.led-caido { display: none; }
+  .onda { display: none; }
+  .zocalo[data-referenciado="true"] .pista-entrada::after { display: none; }
+  .cabezal { transition: none; }
+}
+@keyframes fundido-salida { from { opacity: 1; } to { opacity: 0; } }

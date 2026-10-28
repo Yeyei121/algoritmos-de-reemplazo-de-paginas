@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".web", ".states"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "RUF"]
+# N818: los nombres van en español («ErrorSecuencia»), la regla espera el sufijo inglés «Error».
+ignore = ["RUF001", "RUF002", "RUF003", "N818"]
+
+[tool.ruff.lint.per-file-ignores]
+# Reflex declara las variables de estado como atributos de clase con valor por defecto.
+"laboratorio_paginas/estado/*.py" = ["RUF012"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

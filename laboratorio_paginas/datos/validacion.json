@@ -1,0 +1,150 @@
+{
+ "version": 1,
+ "datos": {
+  "por_marcos": [
+   {
+    "marcos": 3,
+    "recomendada": {
+     "historia": 3,
+     "contador": 2,
+     "envejecimiento": 8,
+     "orden": "propuesta",
+     "modificada": false,
+     "fijada": false,
+     "paginas_fijadas": []
+    },
+    "entrenamiento_recomendada": 7843,
+    "promedios_prueba": {
+     "Recomendada": 15.988,
+     "FIFO": 16.852,
+     "2.ª oportunidad": 16.672,
+     "LRU": 16.066,
+     "Óptimo": 12.104
+    }
+   },
+   {
+    "marcos": 4,
+    "recomendada": {
+     "historia": 3,
+     "contador": 2,
+     "envejecimiento": 8,
+     "orden": "propuesta",
+     "modificada": false,
+     "fijada": false,
+     "paginas_fijadas": []
+    },
+    "entrenamiento_recomendada": 6133,
+    "promedios_prueba": {
+     "Recomendada": 12.364,
+     "FIFO": 13.2,
+     "2.ª oportunidad": 12.882,
+     "LRU": 12.346,
+     "Óptimo": 9.516
+    }
+   }
+  ],
+  "clasicas": [
+   {
+    "secuencia": "Profesor (16)",
+    "marcos": 2,
+    "fallos": {
+     "FIFO": 13,
+     "2.ª oportunidad": 13,
+     "LRU": 13,
+     "Óptimo": 11,
+     "Recomendada": 14
+    }
+   },
+   {
+    "secuencia": "Profesor (16)",
+    "marcos": 3,
+    "fallos": {
+     "FIFO": 12,
+     "2.ª oportunidad": 12,
+     "LRU": 11,
+     "Óptimo": 8,
+     "Recomendada": 9
+    }
+   },
+   {
+    "secuencia": "Profesor (16)",
+    "marcos": 4,
+    "fallos": {
+     "FIFO": 9,
+     "2.ª oportunidad": 8,
+     "LRU": 7,
+     "Óptimo": 7,
+     "Recomendada": 7
+    }
+   },
+   {
+    "secuencia": "Silberschatz (20)",
+    "marcos": 2,
+    "fallos": {
+     "FIFO": 15,
+     "2.ª oportunidad": 15,
+     "LRU": 17,
+     "Óptimo": 13,
+     "Recomendada": 18
+    }
+   },
+   {
+    "secuencia": "Silberschatz (20)",
+    "marcos": 3,
+    "fallos": {
+     "FIFO": 15,
+     "2.ª oportunidad": 14,
+     "LRU": 12,
+     "Óptimo": 9,
+     "Recomendada": 10
+    }
+   },
+   {
+    "secuencia": "Silberschatz (20)",
+    "marcos": 4,
+    "fallos": {
+     "FIFO": 10,
+     "2.ª oportunidad": 9,
+     "LRU": 8,
+     "Óptimo": 8,
+     "Recomendada": 8
+    }
+   },
+   {
+    "secuencia": "Belady (12)",
+    "marcos": 2,
+    "fallos": {
+     "FIFO": 12,
+     "2.ª oportunidad": 12,
+     "LRU": 12,
+     "Óptimo": 9,
+     "Recomendada": 12
+    }
+   },
+   {
+    "secuencia": "Belady (12)",
+    "marcos": 3,
+    "fallos": {
+     "FIFO": 9,
+     "2.ª oportunidad": 9,
+     "LRU": 10,
+     "Óptimo": 7,
+     "Recomendada": 10
+    }
+   },
+   {
+    "secuencia": "Belady (12)",
+    "marcos": 4,
+    "fallos": {
+     "FIFO": 10,
+     "2.ª oportunidad": 10,
+     "LRU": 8,
+     "Óptimo": 6,
+     "Recomendada": 8
+    }
+   }
+  ],
+  "contraejemplo_prueba": 16.454,
+  "contraejemplo_profesor": 9
+ }
+}

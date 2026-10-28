@@ -1,0 +1,55 @@
+/* Tokens de diseño: una placa de memoria en un banco de pruebas. */
+:root {
+  /* Color */
+  --mascara: #0f3d2e;          /* máscara de soldadura: fondo */
+  --sustrato: #0a2e22;         /* zonas hundidas: bus, disco, celdas */
+  --placa: #16503c;            /* placa elevada: paneles */
+  --placa-borde: #2c6b52;      /* serigrafía de contornos */
+  --cobre: #c8823d;            /* pistas y formas (no texto pequeño) */
+  --cobre-texto: #e8a867;      /* texto en cobre, AA sobre máscara y placa */
+  --oro: #d9b25f;              /* dedos del conector de borde */
+  --serigrafia: #f0eee3;       /* texto */
+  --serigrafia-tenue: #a9bfb2; /* texto secundario */
+  --led: #ffb627;              /* bit en 1 */
+  --led-anillo: #7d6a37;       /* LED apagado: solo anillo */
+  --acierto: #5bc8e8;
+  --fallo: #f25c54;
+  --encapsulado: #1a1e1c;      /* cuerpo de los chips */
+  --pin: #9aa59f;
+  --sobre-relleno: #0a2e22;    /* texto encima de acierto, fallo y LED */
+
+  /* Tipografía */
+  --fuente: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif-condensed, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --t-12: 0.75rem;
+  --t-14: 0.875rem;
+  --t-16: 1rem;
+  --t-18: 1.125rem;
+  --t-21: 1.3125rem;
+  --t-24: 1.5rem;
+  --t-30: 1.875rem;
+  --t-36: 2.25rem;
+  --t-48: 3rem;
+
+  /* Espaciado */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 24px;
+  --e-6: 32px;
+  --e-7: 48px;
+  --e-8: 64px;
+
+  --radio: 2px;
+  --radio-placa: 8px;
+  --linea: 1px solid var(--placa-borde);
+
+  /* Movimiento: --escala multiplica todas las duraciones según la velocidad. */
+  --escala: 1;
+  --t-pulso: 250ms;
+  --t-salida: 300ms;
+  --t-entrada: 700ms;
+  --t-corrimiento: 1050ms;
+  --t-envejecer: 1350ms;
+}
